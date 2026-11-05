@@ -23,9 +23,9 @@ In modern apparel manufacturing, meeting production targets under tight export d
 
 ### 1.2 Variable Definitions
 * **Response / Dependent Variable ($Y$):**  
-  * `actual_productivity`: Continuous efficiency ratio (ranging from 0.0 to 1.0) calculated as standard task output achieved divided by allocated standard working hours.
+  * `actual_productivity`: Continuous efficiency ratio (observed range 0.234–1.120; 37 of the 1,197 runs exceed 1.0) calculated as standard task output achieved divided by allocated standard working hours.
 * **Initial Explanatory Variables ($X_1$ to $X_8$):**
-  1. $X_1$ (`targeted_productivity`): Baseline productivity benchmark assigned by factory management ($0.0 \le X_1 \le 1.0$).
+  1. $X_1$ (`targeted_productivity`): Baseline productivity benchmark assigned by factory management ($0.07 \le X_1 \le 0.80$).
   2. $X_2$ (`smv`): Standard Minute Value; the engineering allocated time duration (in minutes) representing the complexity of the garment style.
   3. $X_3$ (`over_time`): Total cumulative overtime clocked by the line operators (in minutes).
   4. $X_4$ (`incentive`): Monetary bonus awarded to the team based on exceeding threshold targets (in local currency BDT).
@@ -34,7 +34,7 @@ In modern apparel manufacturing, meeting production targets under tight export d
   7. $X_7$ (`no_of_style_change`): Count of design or cut changes introduced on a line during a production run.
   8. $X_8$ (`no_of_workers`): Total headcount deployed on that specific line.
 
-*(Note: The variable `wip` [Work In Progress] was excluded because it contains approximately 500 missing values for finishing departments; excluding it prevents artificial sample attrition or imputation distortion across the 1,197 observations).*
+*(Note: The variable `wip` [Work In Progress] was excluded because it contains 506 missing values — every one of the 506 finishing-department rows; excluding it prevents artificial sample attrition or imputation distortion across the 1,197 observations. The categorical fields quarter, department, day, and team were likewise excluded to keep the specification strictly to the continuous operational regressors).*
 
 ---
 
@@ -44,16 +44,18 @@ In modern apparel manufacturing, meeting production targets under tight export d
 
 Using Ordinary Least Squares estimation on the full 8-variable specification:
 
-$$\begin{aligned}
+$$
+\begin{aligned}
 \widehat{\text{actual\_productivity}} = 0.2261 &+ 0.6982(X_1) - 0.0064(X_2) - 3.866 \times 10^{-6}(X_3) \\
 &+ 5.238 \times 10^{-5}(X_4) + 0.0005(X_5) - 0.0091(X_6) \\
 &- 0.0476(X_7) + 0.0035(X_8)
-\end{aligned}$$
+\end{aligned}
+$$
 
 ### 2.2 Detailed Economic & Practical Interpretation
 
 * **Intercept ($\beta_0 = 0.2261$):**  
-  If all explanatory variables are theoretically set to zero, the model predicts an baseline output efficiency of 22.61%. While a factory line cannot operate with zero workers or zero target, this constant represents baseline residual productivity inherent in line presence and basic operational inertia.
+  If all explanatory variables are theoretically set to zero, the model predicts a baseline output efficiency of 22.61%. While a factory line cannot operate with zero workers or zero target, this constant represents baseline residual productivity inherent in line presence and basic operational inertia.
 * **Targeted Productivity ($\beta_1 = +0.6982$):**  
   Holding all other inputs constant (*ceteris paribus*), a 0.10 (10 percentage point) increase in the target set by management translates to an estimated **6.98 percentage point increase** in actual productivity. This confirms a pronounced psychological anchoring effect in goal-setting.
 * **Standard Minute Value — SMV ($\beta_2 = -0.0064$):**  
@@ -61,7 +63,7 @@ $$\begin{aligned}
 * **Overtime ($\beta_3 = -0.00000387$):**  
   Each additional overtime minute has an almost imperceptible and slightly negative marginal association, pointing to potential operator fatigue over prolonged shifts.
 * **Incentive ($\beta_4 = +0.0000524$):**  
-  For every 1,000 BDT paid in financial performance incentives, team productivity increases by **5.24 percentage points**, validating financial rewards as an efficiency driver.
+  For every 1,000 BDT paid in financial performance incentives, the model estimates a 5.24 percentage point increase. This coefficient is, however, not statistically significant in the full model ($p = 0.058$), so the positive sign is suggestive rather than confirmed; it attains statistical significance ($p = 0.041$) only in the refined model of Section 5.
 * **Idle Time ($\beta_5 = +0.0005$):**  
   Shows an unexpected near-zero positive coefficient, primarily driven by severe zero-inflation (very few runs recorded stoppage, creating estimation noise).
 * **Idle Men ($\beta_6 = -0.0091$):**  
@@ -79,17 +81,21 @@ To evaluate whether the combined set of 8 operational predictors explains a stat
 
 ### 3.1 Hypothesis Formulation
 * **Null Hypothesis ($H_0$):**  
-  $$\beta_1 = \beta_2 = \beta_3 = \beta_4 = \beta_5 = \beta_6 = \beta_7 = \beta_8 = 0$$  
+  $$
+  \beta_1 = \beta_2 = \beta_3 = \beta_4 = \beta_5 = \beta_6 = \beta_7 = \beta_8 = 0
+  $$
   *(None of the explanatory variables linearly predict actual productivity; the model has no explanatory power).*
 * **Alternative Hypothesis ($H_a$):**  
-  $$\text{At least one } \beta_j \neq 0 \quad (\text{for } j \in \{1, 2, \dots, 8\})$$
+  $$
+  \text{At least one } \beta_j \neq 0 \quad (\text{for } j \in \{1, 2, \dots, 8\})
+  $$
 
 ### 3.2 Statistical Results & Inference
 * **Degrees of Freedom:** $\text{Model } df = 8$, $\text{Residual } df = 1,188$
 * **Overall $F$-Statistic:** $49.08$
 * **$p$-Value ($\text{Prob} > F$):** $1.20 \times 10^{-68}$
 * **Inference:**  
-  Because the $p$-value ($1.20 \times 10^{-68}$) is overwhelmingly below the standard threshold ($\alpha = 0.05$), we **decisively reject $H_0$**. The regression model as an integrated system possesses statistically significant predictive capacity at the 99.9% confidence interval.
+  Because the $p$-value ($1.20 \times 10^{-68}$) is overwhelmingly below the standard threshold ($\alpha = 0.05$), we **decisively reject $H_0$**. The regression model as an integrated system possesses statistically significant predictive capacity at the 99.9% confidence level.
 * **Coefficient of Determination ($R^2$ & Adjusted $R^2$):**  
   * $R^2 = 0.2484$: The 8 explanatory variables account for **24.84%** of the total variance in garment worker productivity.
   * $\text{Adjusted } R^2 = 0.2433$: Penalizing for model size, the adjusted fit remains strong. In labor-intensive manufacturing environments where human fatigue, ambient floor conditions, and interpersonal dynamics are unobserved, an $R^2$ of ~25% with an $F$-test significance below $10^{-68}$ confirms a robust baseline model.
@@ -99,21 +105,23 @@ To evaluate whether the combined set of 8 operational predictors explains a stat
 ## 4. Requirement 3: Significance of Each Individual Variable
 
 To evaluate the marginal contribution of each predictor when controlling for all others, two-tailed hypothesis tests were conducted:
-$$H_0: \beta_j = 0 \quad \text{vs.} \quad H_a: \beta_j \neq 0 \quad (\alpha = 0.05)$$
+$$
+H_0: \beta_j = 0 \quad \text{vs.} \quad H_a: \beta_j \neq 0 \quad (\alpha = 0.05)
+$$
 
 ### 4.1 Parameter Estimates & $t$-Test Summary
 
 | Variable ($X_j$) | Coefficient ($\beta_j$) | Standard Error | $t$-Statistic | $p$-Value ($P > |t|$) | 95% Confidence Interval | Conclusion ($\alpha = 0.05$) |
 | :--- | :---: | :---: | :---: | :---: | :---: | :--- |
-| **Intercept (`const`)** | $0.2261$ | $0.035$ | $6.409$ | $< 0.001$ | $[0.157, 0.295]$ | Statistically Significant |
-| **`targeted_productivity`** | $0.6982$ | $0.046$ | $15.110$ | $< 0.001$ | $[0.608, 0.789]$ | **Significant** ($p < 0.001$) |
-| **`smv`** | $-0.0064$ | $0.001$ | $-6.573$ | $< 0.001$ | $[-0.008, -0.005]$ | **Significant** ($p < 0.001$) |
-| **`over_time`** | $-3.866 \times 10^{-6}$ | $2.05 \times 10^{-6}$ | $-1.889$ | **$0.059$** | $[-7.88 \times 10^{-6}, 1.48 \times 10^{-7}]$ | **Not Significant** ($p > 0.05$) |
-| **`incentive`** | $5.238 \times 10^{-5}$ | $2.76 \times 10^{-5}$ | $1.900$ | **$0.058$** | $[-1.71 \times 10^{-6}, 1.07 \times 10^{-4}]$ | **Not Significant** ($p > 0.05$) |
-| **`idle_time`** | $0.0005$ | $0.000$ | $1.132$ | **$0.258$** | $[-0.0004, 0.0014]$ | **Not Significant** ($p > 0.05$) |
-| **`idle_men`** | $-0.0091$ | $0.002$ | $-5.476$ | $< 0.001$ | $[-0.012, -0.006]$ | **Significant** ($p < 0.001$) |
-| **`no_of_style_change`** | $-0.0476$ | $0.012$ | $-4.067$ | $< 0.001$ | $[-0.071, -0.025]$ | **Significant** ($p < 0.001$) |
-| **`no_of_workers`** | $0.0035$ | $0.001$ | $6.564$ | $< 0.001$ | $[0.002, 0.005]$ | **Significant** ($p < 0.001$) |
+| **Intercept (`const`)** | 0.2261 | 0.035 | 6.409 | &lt; 0.001 | [0.157, 0.295] | Statistically Significant |
+| **`targeted_productivity`** | 0.6982 | 0.046 | 15.110 | &lt; 0.001 | [0.608, 0.789] | **Significant** ($p < 0.001$) |
+| **`smv`** | -0.0064 | 0.001 | -6.573 | &lt; 0.001 | [-0.008, -0.005] | **Significant** ($p < 0.001$) |
+| **`over_time`** | -3.866e-06 | 2.05e-06 | -1.889 | **0.059** | [-7.88e-06, 1.48e-07] | **Not Significant** ($p > 0.05$) |
+| **`incentive`** | 5.238e-05 | 2.76e-05 | 1.900 | **0.058** | [-1.71e-06, 1.07e-04] | **Not Significant** ($p > 0.05$) |
+| **`idle_time`** | 0.0005 | 0.000 | 1.132 | **0.258** | [-0.0004, 0.0014] | **Not Significant** ($p > 0.05$) |
+| **`idle_men`** | -0.0091 | 0.002 | -5.476 | &lt; 0.001 | [-0.012, -0.006] | **Significant** ($p < 0.001$) |
+| **`no_of_style_change`** | -0.0476 | 0.012 | -4.067 | &lt; 0.001 | [-0.071, -0.025] | **Significant** ($p < 0.001$) |
+| **`no_of_workers`** | 0.0035 | 0.001 | 6.564 | &lt; 0.001 | [0.002, 0.005] | **Significant** ($p < 0.001$) |
 
 ### 4.2 Managerial Assessment of Findings
 * Five predictors (`targeted_productivity`, `smv`, `idle_men`, `no_of_style_change`, and `no_of_workers`) demonstrate strong statistical significance at $p < 0.001$.
@@ -135,11 +143,13 @@ To eliminate superfluous predictors, reduce multicollinearity, and achieve manag
 
 ### 5.2 The Modified (Better) Regression Equation
 
-$$\begin{aligned}
+$$
+\begin{aligned}
 \widehat{\text{actual\_productivity}}_{\text{refined}} = 0.2189 &+ 0.7043(\text{targeted\_productivity}) - 0.0065(\text{smv}) \\
 &+ 5.624 \times 10^{-5}(\text{incentive}) - 0.0077(\text{idle\_men}) \\
-&- 0.0427(\text{no\_of\_style_change}) + 0.0031(\text{no\_of\_workers})
-\end{aligned}$$
+&- 0.0427(\text{no\_of\_style\_change}) + 0.0031(\text{no\_of\_workers})
+\end{aligned}
+$$
 
 ---
 
@@ -163,7 +173,24 @@ $$\begin{aligned}
 
 ---
 
-## 6. Managerial Recommendations & Conclusions
+## 6. Diagnostic Visualizations
+
+The statistical validity of the refined model was confirmed through residual diagnostics and correlation analysis.
+
+### 6.1 Model Diagnostics & Residual Analysis
+![Model Diagnostics](figures/model_diagnostics.png)
+
+* **Actual vs. Predicted Productivity:** The left plot shows points distributed symmetrically along the ideal fit line ($y = x$). The model captures central tendency effectively across the operational spectrum without systematic deviation.
+* **Residuals vs. Fitted Values:** The right plot demonstrates homoscedasticity; residuals are centered around zero with balanced variance across all predicted values, confirming that the OLS linearity assumption holds.
+
+### 6.2 Predictor Correlation Heatmap
+![Correlation Heatmap](figures/correlation_heatmap.png)
+
+* The correlation matrix confirms moderate, healthy correlations among operational variables without critical collinearity thresholds ($r > 0.80$), validating that the refined model parameters are stable.
+
+---
+
+## 7. Managerial Recommendations & Conclusions
 
 Based on the verified parameters of the final regression equation, operations managers should adopt three concrete policies:
 
@@ -173,11 +200,11 @@ Based on the verified parameters of the final regression equation, operations ma
 
 ---
 
-## 7. Submission Artifacts
+## 8. Submission Artifacts
 
 All accompanying materials for this project are organized in the project repository:
 * **Python Implementation Script:** `src/regression_analysis.py`
 * **Raw Kaggle Dataset:** `data/garments_worker_productivity.csv`
-* **Diagnostic Charts:**
+* **Diagnostic Figures:**
   * Residuals vs. Fitted Values: `report/figures/model_diagnostics.png`
   * Variable Correlation Heatmap: `report/figures/correlation_heatmap.png`
