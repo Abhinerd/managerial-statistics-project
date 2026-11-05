@@ -5,6 +5,10 @@
 **Dataset:** Productivity Prediction of Garment Employees (Kaggle / UCI Machine Learning Repository)  
 **Total Sample Size ($N$):** 1,197 Observations  
 **Submission Date:** November 6, 2026  
+  
+**Name:** Abhinav Thaivalappil  
+**Roll No:** AM.SC.U4CSE23103  
+**S7 CSE B**
 
 ---
 
