@@ -111,7 +111,7 @@ $$
 
 ### 4.1 Parameter Estimates & $t$-Test Summary
 
-| Variable ($X_j$) | Coefficient ($\beta_j$) | Standard Error | $t$-Statistic | $p$-Value ($P > |t|$) | 95% Confidence Interval | Conclusion ($\alpha = 0.05$) |
+| Variable ($X_j$) | Coefficient ($\beta_j$) | Standard Error | $t$-Statistic | $p$-Value ($P > \|t\|$) | 95% Confidence Interval | Conclusion ($\alpha = 0.05$) |
 | :--- | :---: | :---: | :---: | :---: | :---: | :--- |
 | **Intercept (`const`)** | 0.2261 | 0.035 | 6.409 | &lt; 0.001 | [0.157, 0.295] | Statistically Significant |
 | **`targeted_productivity`** | 0.6982 | 0.046 | 15.110 | &lt; 0.001 | [0.608, 0.789] | **Significant** ($p < 0.001$) |
@@ -126,7 +126,7 @@ $$
 ### 4.2 Managerial Assessment of Findings
 * Five predictors (`targeted_productivity`, `smv`, `idle_men`, `no_of_style_change`, and `no_of_workers`) demonstrate strong statistical significance at $p < 0.001$.
 * `idle_time` ($p = 0.258$) provides zero incremental explanatory value, indicating that tracking idle time duration without factoring in line context adds noise.
-* `over_time` ($p = 0.059$) and `incentive` ($p = 0.058$) marginalize each other due to shared collinear variance (teams working excessive overtime often receive overlapping compensatory incentives).
+* `over_time` ($p = 0.059$) is marginally non-significant because its variance is largely absorbed by line size and task complexity: it correlates with `no_of_workers` ($r = 0.73$) and `smv` ($r = 0.68$), while its correlation with `incentive` is negligible ($r = -0.005$). Its removal in Section 5 releases the suppression on `incentive`, whose significance then emerges ($p=0.041$).
 
 ---
 
@@ -180,13 +180,13 @@ The statistical validity of the refined model was confirmed through residual dia
 ### 6.1 Model Diagnostics & Residual Analysis
 ![Model Diagnostics](figures/model_diagnostics.png)
 
-* **Actual vs. Predicted Productivity:** The left plot shows points distributed symmetrically along the ideal fit line ($y = x$). The model captures central tendency effectively across the operational spectrum without systematic deviation.
-* **Residuals vs. Fitted Values:** The right plot demonstrates homoscedasticity; residuals are centered around zero with balanced variance across all predicted values, confirming that the OLS linearity assumption holds.
+* **Actual vs. Predicted Productivity:** The left plot shows predictions concentrated in the 0.6–1.0 band while actual outcomes span 0.23–1.12 — a typical range-compression (regression-to-the-mean) pattern in which low performers are over-predicted and high performers under-predicted. This is expected for a model with R2≈0.25, does not bias coefficient estimates, but means predictions should be used as central estimates rather than guarantees.
+* **Residuals vs. Fitted Values:** The right plot shows residuals centered on zero with no systematic curvature (supporting linearity), but the spread visibly widens at higher fitted values. Formally, the Breusch–Pagan test rejects homoskedasticity (LM =164.2, p<0.001), Jarque–Bera rejects exact residual normality (JB=179.7), and the Durbin–Watson statistic (≈1.09) indicates mild positive autocorrelation across consecutive production days. These are standard limitations for bounded, repeated-measures productivity data: coefficient estimates remain unbiased, but tests near the 5% boundary (e.g., incentive, p=0.041) warrant a heteroskedasticity-robust standard errors check.
 
 ### 6.2 Predictor Correlation Heatmap
 ![Correlation Heatmap](figures/correlation_heatmap.png)
 
-* The correlation matrix confirms moderate, healthy correlations among operational variables without critical collinearity thresholds ($r > 0.80$), validating that the refined model parameters are stable.
+* The correlation matrix shows most predictors are only weakly related, with one clear exception: smv and no_of_workers are highly collinear (r = 0.91$; VIFs of 5.98 and 7.44), and `over_time` also tracks line size ($r = 0.73 with no_of_workers), so their coefficients are partial effects within a correlated system. By contrast, over_time and incentive are essentially uncorrelated (r=−0.00), so their marginal non-significance in Table 4.1 is not a collinearity artifact between the two.
 
 ---
 
